@@ -8,10 +8,7 @@ import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
 import com.cumulocity.rest.representation.measurement.MeasurementRepresentation;
 import com.cumulocity.sdk.client.Platform;
 import de.patrickbreucking.i2cagent.cumulocity.*;
-import de.patrickbreucking.i2cagent.sensors.AdafruitBMP180;
-import de.patrickbreucking.i2cagent.sensors.PollutionSensor;
-import de.patrickbreucking.i2cagent.sensors.SHT15;
-import de.patrickbreucking.i2cagent.sensors.TSL45315;
+import de.patrickbreucking.i2cagent.sensors.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.hirt.pi.adafruitlcd.ILCD;
@@ -36,7 +33,7 @@ public class PiI2CAgent extends PollingDriver implements Driver {
     public static final String MOTION_TYPE = "c8y_Baromeeter";
     private AdafruitBMP180 barometerSensor;
     private ManagedObjectRepresentation mo;
-    private PollutionSensor pollutionSensor;
+    private PollutionSensorADS1015 pollutionSensor;
     private TSL45315 lightSensor;
     private SHT15 sht15;
     private MyRealLCD lcd;
@@ -61,7 +58,7 @@ public class PiI2CAgent extends PollingDriver implements Driver {
         lcd.setText(0, "Initializing...");
 
 
-        pollutionSensor = new PollutionSensor();
+        pollutionSensor = new PollutionSensorADS1015();
         lightSensor = new TSL45315();
         sht15 = new SHT15();
         sht15.reset();
@@ -217,19 +214,19 @@ public class PiI2CAgent extends PollingDriver implements Driver {
             // TODO: Split up each sensor exception
             logger.warn("Cannot create measurement on platform", e);
 
-            try {
-                lcd.setText("Resetting network.");
-                Process process = Runtime.getRuntime().exec("sudo ifdown wlan0 && sudo ifup wlan0");
-                lcd.setText("Reset done");
-            } catch (IOException e1) {
-                try {
-                    lcd.clear();
-                    lcd.setText("Network failed.");
-                } catch (IOException e2) {
-                    e2.printStackTrace();
-                }
-
-            }
+//            try {
+//                //lcd.setText("Resetting network.");
+//                //Process process = Runtime.getRuntime().exec("sudo ifdown wlan0 && sudo ifup wlan0");
+//                //lcd.setText("Reset done");
+//            } catch (IOException e1) {
+//                try {
+//                    lcd.clear();
+//                    lcd.setText("Network failed.");
+//                } catch (IOException e2) {
+//                    e2.printStackTrace();
+//                }
+//
+//            }
         }
     }
 
